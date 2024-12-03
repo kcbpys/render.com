@@ -1,20 +1,31 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 import yfinance as yf
 
 app = FastAPI()
 
-# Mount the static files directory
+# Enable CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace "*" with ["https://price-action.onrender.com"] for stricter security
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Mount the static directory
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.get("/")
 async def root():
-    # Redirect root URL to your HTML file
-    from fastapi.responses import FileResponse
-    return FileResponse("static/hello.html")
-
+    return JSONResponse(
+        content={
+            "message": "Welcome to the Stock Data App. Visit /static/hello.html to use the frontend."
+        }
+    )
 
 
 @app.get("/stock/{ticker}")
@@ -24,10 +35,7 @@ async def get_stock_data(ticker: str):
         info = stock.info
         company_name = info.get("longName", "N/A")
 
-        if info.get("previousClose") is not None:
-            previous_close = info.get("previousClose")
-        else:
-            previous_close = "N/A"
+        previous_close = info.get("previousClose", "N/A")
 
         regular_market_price = (
             info.get("currentPrice")
