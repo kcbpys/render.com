@@ -22,8 +22,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
     try:
         stock = yf.Ticker(ticker)
         info = stock.info
@@ -187,7 +185,6 @@ app.add_middleware(
             ),
             "year_low": "{:.2f}".format(year_low),
             "year_high": "{:.2f}".format(year_high),
-            "ndaily_change_percent": "{:.2f}".format(ndaily_change_percent),
         }
         return JSONResponse(content=data)
     except Exception as e:
