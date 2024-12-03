@@ -1,0 +1,18 @@
+{
+    "manifest_version": 3,
+    "name": "Stock Info Viewer",
+    "version": "1.0",
+    "description": "Fetch stock data and display price, P/E ratios, and chart.",
+    "permissions": ["activeTab"],
+    "host_permissions": ["http://127.0.0.1:8000/*"],
+    "action": {
+        "default_popup": "hello.html",
+        "default_icon": {
+            "16": "arrow.png",
+            "48": "arrow.png",
+            "128": "arrow.png"
+        },
+        "default_popup_width": 600, 
+        "default_popup_height": 800 
+    }
+}

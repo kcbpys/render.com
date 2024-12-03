@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Price-Action Board</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+            width: 235px;
+            height: auto;
+        }
+        h2 {
+            color: #e63435;
+        }
+        #results {
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <h2>Price-Action</h2>
+    <input type="text" id="ticker" placeholder="Enter Stock Ticker">
+    <br><br>
+    <button id="fetchData">Quote lookup (enter)</button>
+    <br><br>
+    <footer>Made by TM &copy;2024</footer>
+    <div id="results"></div>
+    <script src="popup.js"></script>
+</body>
+</html>
+
+<!-- uvicorn main:app --reload
+ -->
+ <!-- pkill -f uvicorn -->
+
+
+ <!-- rm -rf __pycache__
+ -->
