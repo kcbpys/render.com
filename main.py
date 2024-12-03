@@ -7,9 +7,22 @@ A stock application/chrome extension that fetches stock data using yfinance (as 
 """
 app = FastAPI()
 
-
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the Stock Data API. Use /stock/{ticker} to fetch data."}
 @app.get("/stock/{ticker}")
 async def get_stock_data(ticker: str):
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Adjust to specific origins as needed
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
     try:
         stock = yf.Ticker(ticker)
