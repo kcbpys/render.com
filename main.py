@@ -12,7 +12,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 @app.get("/")
 async def root():
     # Redirect root URL to your HTML file
-    return JSONResponse(content={"message": "Welcome to the Stock Data App. Visit /static/index.html to use the frontend."})
+    return JSONResponse(content={"message": "Welcome to the Stock Data App. Visit /static/hello.html to use the frontend."})
 
 
 @app.get("/stock/{ticker}")
