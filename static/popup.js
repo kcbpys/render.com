@@ -9,7 +9,8 @@ async function fetchStockData() {
     }
     
     try {
-        const response = await fetch(`/stock/${ticker}`);
+        const response = await fetch(`https://your-app-name.onrender.com/stock/${ticker}`);
+
 
         if (!response.ok) {
             throw new Error("Ticker not found");
