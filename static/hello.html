@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+from fastapi.staticfiles import StaticFiles
+app.mount("/static", StaticFiles(directory="static"), name="static")
 <html lang="en">
 <head>
     <meta charset="UTF-8">

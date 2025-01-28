@@ -6,7 +6,7 @@
     "permissions": ["activeTab"],
     "host_permissions": ["https://your-fastapi-app.onrender.com/*"],
     "action": {
-        "default_popup": "hello.html",
+    "default_popup": "https://fastapi-publish.onrender.com/static/hello.html",
         "default_icon": {
             "16": "arrow.png",
             "48": "arrow.png",
