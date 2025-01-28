@@ -1,0 +1,17 @@
+{
+    "manifest_version": 3,
+    "name": "Stock Info Viewer",
+    "version": "1.0",
+    "description": "Fetch stock data and display price, P/E ratios, and chart.",
+    "permissions": ["activeTab"],
+    "host_permissions": ["https://fastapi-publish.onrender.com/*"],
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+        "16": "icon128.png",
+        "48": "icon128.png",
+        "128": "icon128.png"
+      }
+    }
+  }
+  
