@@ -9,7 +9,7 @@ app = FastAPI()
 # Enable CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Replace "*" with ["https://price-action.onrender.com"] for stricter security
+    allow_origins=["*"],  # Replace "*" with ["https://price-action.onrender.com"] for stricter security 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
