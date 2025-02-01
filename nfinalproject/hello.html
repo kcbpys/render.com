@@ -25,14 +25,13 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 </head>
 <body>
     <h2>Price-Action</h2>
-    <input type="text" id="ticker" placeholder="Enter Stock Ticker">
+    <input type="text" id="ticker" placeholder="Enter Ticker">
     <br><br>
     <button id="fetchData">Quote lookup (enter)</button>
     <br><br>
     <footer>Made by TM &copy;2024</footer>
     <div id="results"></div>
-    <script src="/static/popup.js"></script>
-
+    <script src="popup.js"></script>
 </body>
 </html>
 
