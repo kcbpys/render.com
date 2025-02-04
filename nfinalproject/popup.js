@@ -9,7 +9,7 @@ async function fetchStockData() {
     }
     
     try {
-        const response = await fetch(`https://your-app-name.onrender.com/stock/${ticker}`);
+        const response = await fetch(`https://fastapi-publish.onrender.com/stock/${ticker}`);
         
 
         if (!response.ok) {
