@@ -5,16 +5,15 @@ from fastapi.staticfiles import StaticFiles
 import yfinance as yf
 
 app = FastAPI()
-@app.get("/")
-def read_root():
-    return {"message": "Hello, World!"}
 
-
-# Mount the static directory
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-
-
+# Add CORS middleware to allow requests from your frontend domain
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://fastapi-publish.onrender.com"],  # Allow only your frontend domain
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 
 @app.get("/")
 async def root():
@@ -23,7 +22,6 @@ async def root():
             "message": "Welcome to the Stock Data App. Visit /static/hello.html to use the frontend."
         }
     )
-
 
 @app.get("/stock/{ticker}")
 async def get_stock_data(ticker: str):
@@ -49,14 +47,6 @@ async def get_stock_data(ticker: str):
         else:
             daily_change_percent = "N/A"
 
-        if daily_change_percent != "N/A" and isinstance(daily_change_percent, (int, float)):
-            ndaily_change_percent = daily_change_percent * 1000
-        else:
-            ndaily_change_percent = "N/A"
-
-        if ndaily_change_percent != "N/A":
-            daily_change_percent = f" or {'+' if daily_change_percent >= 0 else ''}{daily_change_percent}"
-
         raw_market_cap = info.get("marketCap", None)
         if raw_market_cap:
             if raw_market_cap >= 1e12:
@@ -70,10 +60,7 @@ async def get_stock_data(ticker: str):
         else:
             market_cap = "N/A"
 
-        if info.get("beta"):
-            round_beta = round(info.get("beta"), 2)
-        else:
-            round_beta = "N/A"
+        round_beta = round(info.get("beta", "N/A"), 2) if info.get("beta") else "N/A"
 
         all_volume = f"{info.get('volume', 'N/A')} / {info.get('averageVolume', 'N/A')}"
 
@@ -86,5 +73,6 @@ async def get_stock_data(ticker: str):
             "beta": f"{round_beta:.2f}" if isinstance(round_beta, (int, float)) else "N/A",
         }
         return JSONResponse(content=data)
+
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)
