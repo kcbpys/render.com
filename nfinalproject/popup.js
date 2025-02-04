@@ -10,7 +10,7 @@ async function fetchStockData() {
     
     try {
         const response = await fetch(`https://fastapi-publish.onrender.com/stock/${ticker}`);
-        
+
 
         if (!response.ok) {
             throw new Error("Ticker not found");
