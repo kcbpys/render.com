@@ -9,7 +9,7 @@ app = FastAPI()
 # Add CORS middleware to allow requests from your frontend domain
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://fastapi-publish.onrender.com"],  # Allow only your frontend domain
+    allow_origins=["*"],  # Allow only your frontend domain
     allow_credentials=True,
     allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
     allow_headers=["*"],  # Allow all headers
