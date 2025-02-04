@@ -11,7 +11,6 @@ async function fetchStockData() {
     try {
         const response = await fetch(`https://fastapi-publish.onrender.com/stock/${ticker}`);
 
-
         if (!response.ok) {
             throw new Error("Ticker not found");
         }
@@ -21,17 +20,17 @@ async function fetchStockData() {
         } else {
             // Determine color based on daily change percentage
             let priceColor = "black"; // Default color
-            if (data.ndaily_change_percent !== null && !isNaN(data.ndaily_change_percent)) {
-                if (data.ndaily_change_percent > 0) {
+            if (data.daily_change !== "N/A" && !isNaN(data.daily_change)) {
+                if (data.daily_change > 0) {
                     priceColor = "green"; // Positive change
-                } else if (data.ndaily_change_percent < 0) {
+                } else if (data.daily_change < 0) {
                     priceColor = "red"; // Negative change
                 }
             }
             // Establishing of the data dictionary below using HTML as style parameters 
-        const companyName = data.company_name || "N/A"; 
+            const companyName = data.company_name || "N/A"; 
             resultsDiv.innerHTML = `
-                <b style="text-align: center;"><u>${data.company_name || "N/A"}</u></b>
+                <b style="text-align: center;"><u>${companyName}</u></b>
                 <p><strong>Price:</strong> <span style="color:${priceColor};">$${data.price || "N/A"}</span></p>
                 <p><strong>Daily Change:</strong> ${data.daily_change || "N/A"}%</p>
                 <p><strong>Market Cap:</strong> ${data.market_cap || "N/A"}</p>
@@ -43,7 +42,7 @@ async function fetchStockData() {
             `;
         }
     } catch (err) {
-        resultsDiv.innerHTML = `Error:= ${err.message}`;
+        resultsDiv.innerHTML = `Error: ${err.message}`;
     }
 }
 
@@ -58,6 +57,3 @@ document.getElementById("ticker").addEventListener("keydown", (event) => {
         fetchStockData();
     }
 });
-
-
-
