@@ -125,7 +125,7 @@ async def get_stock_data(ticker: str):
 
         pe_total = pe_trailing + " / " + pe_forward
 
-        if company_name is "N/A":
+        if company_name == "N/A":
             company_name = "Ticker Not Found - Try Again"
         data = {
             "company_name": company_name,
