@@ -108,13 +108,19 @@ async def get_stock_data(ticker: str):
         if isinstance(year_low, (int, float)):
             year_low = f"{year_low:.2f}"
 
-        # Trailing P/E and Forward P/E
-        pe_ratio_total = info.get("trailingPE", "N/A")
-        if isinstance(pe_ratio_total, (int, float)):
-            pe_ratio_total = f"{pe_ratio_total:.2f}"
-        forward_pe = info.get("forwardPE", "N/A")
-        if isinstance(forward_pe, (int, float)):
-            forward_pe = f"{forward_pe:.2f}"
+        if info.get("trailingPE") is not None:
+            pe_trailing = str(round(info.get("trailingPE"), 2))
+        else:
+            pe_trailing = "N/A"
+        pe_forward = info.get("forwardPE")
+        if pe_forward <0:
+            pe_forward = "N/A"
+        if pe_forward != "N/A":
+            pe_forward = str(round(pe_forward, 2))
+        else:
+            pe_forward = "N/A"
+        pe_total = pe_trailing + " / " + pe_forward
+
 
         data = {
             "company_name": company_name,
