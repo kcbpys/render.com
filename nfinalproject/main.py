@@ -93,7 +93,7 @@ async def get_stock_data(ticker: str):
         beta_value = info.get("beta")
         round_beta = round(beta_value, 2) if beta_value is not None else "N/A"
 
-        # Format volume and average volume using our helper
+        # Format volume and average volume using our helper function
         volume = info.get("volume")
         average_volume = info.get("averageVolume")
         formatted_volume = format_volume(volume)
@@ -108,19 +108,22 @@ async def get_stock_data(ticker: str):
         if isinstance(year_low, (int, float)):
             year_low = f"{year_low:.2f}"
 
+        # Trailing P/E and Forward P/E handling
+        # For many mutual funds and index funds, these values may not be available.
         if info.get("trailingPE") is not None:
             pe_trailing = str(round(info.get("trailingPE"), 2))
         else:
             pe_trailing = "N/A"
+
         pe_forward = info.get("forwardPE")
-        if pe_forward <0:
+        if pe_forward is None or (isinstance(pe_forward, (int, float)) and pe_forward < 0):
             pe_forward = "N/A"
-        if pe_forward != "N/A":
+        elif isinstance(pe_forward, (int, float)):
             pe_forward = str(round(pe_forward, 2))
         else:
             pe_forward = "N/A"
-        pe_total = pe_trailing + " / " + pe_forward
 
+        pe_total = pe_trailing + " / " + pe_forward
 
         data = {
             "company_name": company_name,
