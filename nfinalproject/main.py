@@ -6,13 +6,13 @@ import yfinance as yf
 
 app = FastAPI()
 
-# Mount the static directory
+# Mount the static directory (make sure the "static" folder exists in your project root)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Add CORS middleware to allow requests from any origin (update for production)
+# Add CORS middleware to allow requests from any origin (update for production as needed)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, restrict this to your frontend domain(s)
+    allow_origins=["*"],  # For development; restrict this in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -44,11 +44,11 @@ async def get_stock_data(ticker: str):
             or previous_close
         )
 
-        # Calculate daily change percentage if possible (and prevent division by zero)
+        # Calculate daily change percentage (if possible)
         if (
-            isinstance(regular_market_price, (int, float)) and 
-            isinstance(previous_close, (int, float)) and 
-            previous_close != 0
+            isinstance(regular_market_price, (int, float))
+            and isinstance(previous_close, (int, float))
+            and previous_close != 0
         ):
             daily_change_percent = round(
                 ((regular_market_price - previous_close) / previous_close) * 100, 2
@@ -56,7 +56,7 @@ async def get_stock_data(ticker: str):
         else:
             daily_change_percent = "N/A"
 
-        # Calculate market capitalization with proper formatting
+        # Calculate market capitalization with formatting
         raw_market_cap = info.get("marketCap")
         if isinstance(raw_market_cap, (int, float)):
             if raw_market_cap >= 1e12:
@@ -70,12 +70,9 @@ async def get_stock_data(ticker: str):
         else:
             market_cap = "N/A"
 
-        # Fix beta handling: allow beta value 0 to be valid
+        # Handle beta value (accept 0 as valid)
         beta_value = info.get("beta")
-        if beta_value is not None:
-            round_beta = round(beta_value, 2)
-        else:
-            round_beta = "N/A"
+        round_beta = round(beta_value, 2) if beta_value is not None else "N/A"
 
         # Combine volume and average volume
         volume = info.get("volume", "N/A")

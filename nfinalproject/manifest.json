@@ -1,17 +1,16 @@
 {
-    "manifest_version": 3,
-    "name": "Stock Info Viewer",
-    "version": "1.0",
-    "description": "Fetch stock data and display price, P/E ratios, and chart.",
-    "permissions": [],
-    "host_permissions": ["https://fastapi-publish.onrender.com/*"],
-    "action": {
-      "default_popup": "hello.html",
-      "default_icon": {
-        "16": "arrow.png",
-        "48": "arrow.png",
-        "128": "arrow.png"
-      }
+  "manifest_version": 3,
+  "name": "Stock Info Viewer",
+  "version": "1.0",
+  "description": "Fetch stock data and display price, P/E ratios, and chart.",
+  "permissions": [],
+  "host_permissions": ["https://fastapi-publish.onrender.com/*"],
+  "action": {
+    "default_popup": "hello.html",
+    "default_icon": {
+      "16": "arrow.png",
+      "48": "arrow.png",
+      "128": "arrow.png"
     }
   }
-  
+}
