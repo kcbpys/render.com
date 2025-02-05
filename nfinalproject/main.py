@@ -5,17 +5,18 @@ from fastapi.staticfiles import StaticFiles
 import yfinance as yf
 
 app = FastAPI()
+
 # Mount the static directory
 app.mount("/static", StaticFiles(directory="static"), name="static")
-# Add CORS middleware to allow requests from your frontend domain
+
+# Add CORS middleware to allow requests from any origin (update for production)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow only your frontend domain
+    allow_origins=["*"],  # In production, restrict this to your frontend domain(s)
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
-
 
 @app.get("/")
 async def root():
@@ -30,27 +31,34 @@ async def get_stock_data(ticker: str):
     try:
         stock = yf.Ticker(ticker)
         info = stock.info
-        company_name = info.get("longName", "N/A")
 
-        previous_close = info.get("previousClose", "N/A")
+        # Get company name
+        company_name = info.get("longName") or "N/A"
 
+        # Retrieve numeric values for price calculations
+        previous_close = info.get("previousClose")
         regular_market_price = (
             info.get("currentPrice")
             or info.get("navPrice")
             or info.get("regularMarketPrice")
-            or info.get("previousClose")
-            or "N/A"
+            or previous_close
         )
 
-        if regular_market_price != "N/A" and previous_close != "N/A":
+        # Calculate daily change percentage if possible (and prevent division by zero)
+        if (
+            isinstance(regular_market_price, (int, float)) and 
+            isinstance(previous_close, (int, float)) and 
+            previous_close != 0
+        ):
             daily_change_percent = round(
                 ((regular_market_price - previous_close) / previous_close) * 100, 2
             )
         else:
             daily_change_percent = "N/A"
 
-        raw_market_cap = info.get("marketCap", None)
-        if raw_market_cap:
+        # Calculate market capitalization with proper formatting
+        raw_market_cap = info.get("marketCap")
+        if isinstance(raw_market_cap, (int, float)):
             if raw_market_cap >= 1e12:
                 market_cap = f"{round(raw_market_cap / 1e12, 2)}T - Mega Cap"
             elif raw_market_cap >= 1e9:
@@ -62,17 +70,26 @@ async def get_stock_data(ticker: str):
         else:
             market_cap = "N/A"
 
-        round_beta = round(info.get("beta", "N/A"), 2) if info.get("beta") else "N/A"
+        # Fix beta handling: allow beta value 0 to be valid
+        beta_value = info.get("beta")
+        if beta_value is not None:
+            round_beta = round(beta_value, 2)
+        else:
+            round_beta = "N/A"
 
-        all_volume = f"{info.get('volume', 'N/A')} / {info.get('averageVolume', 'N/A')}"
+        # Combine volume and average volume
+        volume = info.get("volume", "N/A")
+        average_volume = info.get("averageVolume", "N/A")
+        all_volume = f"{volume} / {average_volume}"
 
+        # Additional data fields
         year_high = info.get("fiftyTwoWeekHigh", "N/A")
         year_low = info.get("fiftyTwoWeekLow", "N/A")
-        pe_ratio_total = info.get("trailingPE", "N/A")  # or use forwardPE if preferred
+        pe_ratio_total = info.get("trailingPE", "N/A")
 
         data = {
             "company_name": company_name,
-            "price": f"{regular_market_price:.2f}" if regular_market_price != "N/A" else "N/A",
+            "price": f"{regular_market_price:.2f}" if isinstance(regular_market_price, (int, float)) else "N/A",
             "daily_change": daily_change_percent,
             "market_cap": market_cap,
             "volume": all_volume,
