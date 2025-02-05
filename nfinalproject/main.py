@@ -5,7 +5,8 @@ from fastapi.staticfiles import StaticFiles
 import yfinance as yf
 
 app = FastAPI()
-
+# Mount the static directory
+app.mount("/static", StaticFiles(directory="static"), name="static")
 # Add CORS middleware to allow requests from your frontend domain
 app.add_middleware(
     CORSMiddleware,
@@ -65,6 +66,10 @@ async def get_stock_data(ticker: str):
 
         all_volume = f"{info.get('volume', 'N/A')} / {info.get('averageVolume', 'N/A')}"
 
+        year_high = info.get("fiftyTwoWeekHigh", "N/A")
+        year_low = info.get("fiftyTwoWeekLow", "N/A")
+        pe_ratio_total = info.get("trailingPE", "N/A")  # or use forwardPE if preferred
+
         data = {
             "company_name": company_name,
             "price": f"{regular_market_price:.2f}" if regular_market_price != "N/A" else "N/A",
@@ -72,7 +77,11 @@ async def get_stock_data(ticker: str):
             "market_cap": market_cap,
             "volume": all_volume,
             "beta": f"{round_beta:.2f}" if isinstance(round_beta, (int, float)) else "N/A",
+            "year_high": year_high,
+            "year_low": year_low,
+            "pe_ratio_total": pe_ratio_total,
         }
+
         return JSONResponse(content=data)
 
     except Exception as e:
