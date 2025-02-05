@@ -131,8 +131,7 @@ async def get_stock_data(ticker: str):
             "beta": f"{round_beta:.2f}" if isinstance(round_beta, (int, float)) else "N/A",
             "year_high": year_high,
             "year_low": year_low,
-            "pe_ratio_total": pe_ratio_total,
-            "forward_pe": forward_pe,
+            "pe_ratio_total": pe_total,
         }
 
         return JSONResponse(content=data)
