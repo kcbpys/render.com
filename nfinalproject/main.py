@@ -74,8 +74,11 @@ async def get_stock_data(ticker: str):
             )
         else:
             daily_change_percent = "N/A"
+        daily_change_points = (regular_market_price - previous_close)
+        daily_change_points = (daily_change_points) + "or " (daily_change_percent)
 
-            daily_change_points = round(
+        if daily_change_points != "N/A":
+                daily_change_points = round(
                 (regular_market_price - previous_close) * 100, 2
             )
         else:
