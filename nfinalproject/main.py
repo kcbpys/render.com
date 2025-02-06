@@ -74,8 +74,6 @@ async def get_stock_data(ticker: str):
             )
         else:
             daily_change_percent = "N/A"
-        daily_change_points = (regular_market_price - previous_close)
-        daily_change_points = (daily_change_points) + "or " (daily_change_percent)
 
         if (
             isinstance(regular_market_price, (int, float)) and 
