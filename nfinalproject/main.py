@@ -145,7 +145,7 @@ async def get_stock_data(ticker: str):
 
         data = {
             "company_name": company_name,
-            "price": "price": (
+            "price":(
                 "{:.2f}".format(regular_market_price) if regular_market_price else "N/A"
             ),
             "daily_change": daily_change,
