@@ -145,16 +145,17 @@ async def get_stock_data(ticker: str):
 
         data = {
             "company_name": company_name,
-            "price": price_formatted,
-            # Return the numeric daily change (percentage) for JS adaptive color logic
+            "price": "price": (
+                "{:.2f}".format(regular_market_price) if regular_market_price else "N/A"
+            ),
             "daily_change": daily_change,
-            # Also return the combined display string (points or percentage) for your reference
             "market_cap": market_cap,
             "volume": all_volume,
             "beta": f"{round_beta:.2f}" if isinstance(round_beta, (int, float)) else "N/A",
             "year_high": year_high,
             "year_low": year_low,
             "pe_ratio_total": pe_total,
+            "ndaily_change_percent": "{:.2f}".format(ndaily_change_percent),
         }
 
         return JSONResponse(content=data)
