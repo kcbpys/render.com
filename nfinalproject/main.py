@@ -57,28 +57,39 @@ async def get_stock_data(ticker: str):
             or previous_close
         )
 
-        # Format price to 2 decimal places if numeric
-        if isinstance(regular_market_price, (int, float)):
-            price_formatted = f"{regular_market_price:.2f}"
+        if regular_market_price != "N/A" and previous_close != "N/A":
+            daily_change_percent = round(
+                ((regular_market_price - previous_close) / previous_close) * 100, 2
+            )
         else:
-            price_formatted = "N/A"
-
-        # Calculate daily change if possible
-        if (
-            isinstance(regular_market_price, (int, float))
-            and isinstance(previous_close, (int, float))
-            and previous_close != 0
+            daily_change_percent = "N/A"
+        if daily_change_percent != "N/A" and isinstance(
+            daily_change_percent, (int, float)
         ):
-            # Calculate points change and percentage change
-            daily_change_points = regular_market_price - previous_close
-            daily_change_percent = round((daily_change_points / previous_close) * 100, 2)
-            # For adaptive color, we return a pure numeric percentage
-            daily_change = daily_change_percent  
-            # Combined display string: points change "or" percentage change
-            daily_change_display = f"{daily_change_points:.2f} or {daily_change_percent}"
+            ndaily_change_percent = daily_change_percent
+            ndaily_change_percent = int(ndaily_change_percent)
+            ndaily_change_percent = (
+                daily_change_percent * 1000
+            )  # ndaily_change_percent is used here as an indicator, or form of dummy variable - inflated this to 1k as the JS front-end would only change the color if the percent change was >1%, for whatever reason, so implemented the * 1000 to inflate this backend metric to check if the number is negative or not.
+            daily_change_percent = round(daily_change_percent, 2)
         else:
-            daily_change = "N/A"
-            daily_change_display = "N/A"
+            ndaily_change_percent = "N/A"
+
+        if (
+            daily_change_percent != "N/A"
+            and ndaily_change_percent != "N/A"
+            and daily_change_percent >= 0
+        ):
+            daily_change_percent = " or +" + str(daily_change_percent)
+        elif (
+            daily_change_percent != "N/A"
+            and ndaily_change_percent != "N/A"
+            and daily_change_percent <= 0
+        ):
+            daily_change_percent = " or " + str(daily_change_percent)
+        else:
+            daily_change_percent = "N/A"
+
 
         # Calculate market capitalization with proper formatting
         raw_market_cap = info.get("marketCap")
@@ -138,7 +149,6 @@ async def get_stock_data(ticker: str):
             # Return the numeric daily change (percentage) for JS adaptive color logic
             "daily_change": daily_change,
             # Also return the combined display string (points or percentage) for your reference
-            "daily_change_display": daily_change_display,
             "market_cap": market_cap,
             "volume": all_volume,
             "beta": f"{round_beta:.2f}" if isinstance(round_beta, (int, float)) else "N/A",
