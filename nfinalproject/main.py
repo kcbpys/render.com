@@ -71,7 +71,7 @@ async def get_stock_data(ticker: str):
         ):
             daily_change_points = regular_market_price - previous_close
             daily_change_percent = round((daily_change_points / previous_close) * 100, 2)
-            daily_change_str = f"{daily_change_points:.2f} or {daily_change_percent}%"
+            daily_change_str = f"{daily_change_points:.2f} or {daily_change_percent}"
         else:
             daily_change_str = "N/A"
             daily_change_percent = "N/A"
