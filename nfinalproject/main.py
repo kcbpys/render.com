@@ -77,14 +77,17 @@ async def get_stock_data(ticker: str):
         daily_change_points = (regular_market_price - previous_close)
         daily_change_points = (daily_change_points) + "or " (daily_change_percent)
 
-        if daily_change_points != "N/A":
-                daily_change_points = round(
-                (regular_market_price - previous_close) * 100, 2
-            )
+        if (
+            isinstance(regular_market_price, (int, float)) and 
+            isinstance(previous_close, (int, float)) and 
+            previous_close != 0
+        ):
+            daily_change_points = regular_market_price - previous_close
+            daily_change_percent = round((daily_change_points / previous_close) * 100, 2)
+            daily_change = f"{daily_change_points:.2f} points or {daily_change_percent}%"
         else:
-            daily_change_points = "N/A"
+            daily_change = "N/A"
 
-            daily_change = (daily_change_points) + "or " (daily_change_percent)
         # Calculate market capitalization with proper formatting
         raw_market_cap = info.get("marketCap")
         if isinstance(raw_market_cap, (int, float)):
