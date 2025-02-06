@@ -63,18 +63,7 @@ async def get_stock_data(ticker: str):
         else:
             price_formatted = "N/A"
 
-        # Calculate daily change percentage (if possible and avoid division by zero)
-        if (
-            isinstance(regular_market_price, (int, float)) and 
-            isinstance(previous_close, (int, float)) and 
-            previous_close != 0
-        ):
-            daily_change_percent = round(
-                ((regular_market_price - previous_close) / previous_close) * 100, 2
-            )
-        else:
-            daily_change_percent = "N/A"
-
+        # Calculate daily change and percentage change if possible
         if (
             isinstance(regular_market_price, (int, float)) and 
             isinstance(previous_close, (int, float)) and 
@@ -82,9 +71,10 @@ async def get_stock_data(ticker: str):
         ):
             daily_change_points = regular_market_price - previous_close
             daily_change_percent = round((daily_change_points / previous_close) * 100, 2)
-            daily_change = f"{daily_change_points:.2f} points or {daily_change_percent}%"
+            daily_change_str = f"{daily_change_points:.2f} or {daily_change_percent}%"
         else:
-            daily_change = "N/A"
+            daily_change_str = "N/A"
+            daily_change_percent = "N/A"
 
         # Calculate market capitalization with proper formatting
         raw_market_cap = info.get("marketCap")
@@ -120,7 +110,6 @@ async def get_stock_data(ticker: str):
             year_low = f"{year_low:.2f}"
 
         # Trailing P/E and Forward P/E handling
-        # For many mutual funds and index funds, these values may not be available.
         if info.get("trailingPE") is not None:
             pe_trailing = str(round(info.get("trailingPE"), 2))
         else:
@@ -138,10 +127,13 @@ async def get_stock_data(ticker: str):
 
         if company_name == "N/A":
             company_name = "API 404 - Ticker Not Found"
+
         data = {
             "company_name": company_name,
             "price": price_formatted,
-            "daily_change": daily_change,
+            # Return both the formatted string and the numeric daily change percentage
+            "daily_change": daily_change_str,
+            "daily_change_percent": daily_change_percent,
             "market_cap": market_cap,
             "volume": all_volume,
             "beta": f"{round_beta:.2f}" if isinstance(round_beta, (int, float)) else "N/A",
