@@ -63,17 +63,18 @@ async def get_stock_data(ticker: str):
         else:
             price_formatted = "N/A"
 
-        # Calculate daily change values if possible
+        # Calculate daily change if possible
         if (
             isinstance(regular_market_price, (int, float))
             and isinstance(previous_close, (int, float))
             and previous_close != 0
         ):
+            # Calculate points change and percentage change
             daily_change_points = regular_market_price - previous_close
             daily_change_percent = round((daily_change_points / previous_close) * 100, 2)
-            # This numeric value is used by JS for adaptive color pricing
+            # For adaptive color, we return a pure numeric percentage
             daily_change = daily_change_percent  
-            # This string combines points and percent for display
+            # Combined display string: points change "or" percentage change
             daily_change_display = f"{daily_change_points:.2f} or {daily_change_percent}"
         else:
             daily_change = "N/A"
@@ -134,9 +135,9 @@ async def get_stock_data(ticker: str):
         data = {
             "company_name": company_name,
             "price": price_formatted,
-            # Return the numeric daily change (for adaptive color in JS)
+            # Return the numeric daily change (percentage) for JS adaptive color logic
             "daily_change": daily_change,
-            # Return the combined display string (you can update your UI to show this if desired)
+            # Also return the combined display string (points or percentage) for your reference
             "daily_change_display": daily_change_display,
             "market_cap": market_cap,
             "volume": all_volume,
