@@ -63,18 +63,21 @@ async def get_stock_data(ticker: str):
         else:
             price_formatted = "N/A"
 
-        # Calculate daily change and percentage change if possible
+        # Calculate daily change values if possible
         if (
-            isinstance(regular_market_price, (int, float)) and 
-            isinstance(previous_close, (int, float)) and 
-            previous_close != 0
+            isinstance(regular_market_price, (int, float))
+            and isinstance(previous_close, (int, float))
+            and previous_close != 0
         ):
             daily_change_points = regular_market_price - previous_close
             daily_change_percent = round((daily_change_points / previous_close) * 100, 2)
-            daily_change_str = f"{daily_change_points:.2f} or {daily_change_percent}"
+            # This numeric value is used by JS for adaptive color pricing
+            daily_change = daily_change_percent  
+            # This string combines points and percent for display
+            daily_change_display = f"{daily_change_points:.2f} or {daily_change_percent}"
         else:
-            daily_change_str = "N/A"
-            daily_change_percent = "N/A"
+            daily_change = "N/A"
+            daily_change_display = "N/A"
 
         # Calculate market capitalization with proper formatting
         raw_market_cap = info.get("marketCap")
@@ -131,9 +134,10 @@ async def get_stock_data(ticker: str):
         data = {
             "company_name": company_name,
             "price": price_formatted,
-            # Return both the formatted string and the numeric daily change percentage
-            "daily_change": daily_change_str,
-            "daily_change_percent": daily_change_percent,
+            # Return the numeric daily change (for adaptive color in JS)
+            "daily_change": daily_change,
+            # Return the combined display string (you can update your UI to show this if desired)
+            "daily_change_display": daily_change_display,
             "market_cap": market_cap,
             "volume": all_volume,
             "beta": f"{round_beta:.2f}" if isinstance(round_beta, (int, float)) else "N/A",
